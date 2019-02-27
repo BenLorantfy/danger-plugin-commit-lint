@@ -1,5 +1,5 @@
 import * as commitLint from "./index"
-import { EmptyLineRule } from "./rules/EmptyLineRule"
+import { CommitLintRuleName } from "./types"
 
 declare const global: any
 
@@ -46,6 +46,24 @@ describe("commitLint()", () => {
     expect(global.fail).not.toBeCalled()
   })
 
+  it("should produce message", () => {
+    global.danger = {
+      // https://danger.systems/js/reference.html#GitDSL
+      git: {
+        commits: [
+          {
+            message: TEST_MESSAGES.valid,
+            sha: "123456",
+          },
+        ],
+      },
+    }
+
+    commitLint.check({ disable: true })
+
+    expect(global.message).toBeCalledWith("All commit-lint checks were disabled, nothing to do.")
+  })
+
   it("should error for empty line", () => {
     global.danger = {
       git: {
@@ -60,6 +78,182 @@ describe("commitLint()", () => {
 
     commitLint.check()
 
-    expect(global.fail).toHaveBeenCalledWith(`${EmptyLineRule.MESSAGE}\n123456`)
+    expect(global.fail).toHaveBeenCalledWith("Please separate commit subject from body with newline.\n123456")
+    expect(global.warn).not.toHaveBeenCalled()
+  })
+
+  it("should warn for empty line", () => {
+    global.danger = {
+      git: {
+        commits: [
+          {
+            message: TEST_MESSAGES.empty_line,
+            sha: "123456",
+          },
+        ],
+      },
+    }
+
+    commitLint.check({
+      warn: [CommitLintRuleName.empty_line],
+    })
+
+    expect(global.fail).not.toHaveBeenCalled()
+    expect(global.warn).toHaveBeenCalledWith("Please separate commit subject from body with newline.\n123456")
+  })
+
+  it("should not error for empty line if disabled", () => {
+    global.danger = {
+      git: {
+        commits: [
+          {
+            message: TEST_MESSAGES.empty_line,
+            sha: "123456",
+          },
+        ],
+      },
+    }
+
+    commitLint.check({
+      disable: [CommitLintRuleName.empty_line],
+    })
+
+    expect(global.fail).not.toHaveBeenCalled()
+    expect(global.warn).not.toHaveBeenCalled()
+  })
+
+  it("should not warn for empty line if disabled", () => {
+    global.danger = {
+      git: {
+        commits: [
+          {
+            message: TEST_MESSAGES.empty_line,
+            sha: "123456",
+          },
+        ],
+      },
+    }
+
+    commitLint.check({
+      disable: [CommitLintRuleName.empty_line],
+      warn: [CommitLintRuleName.empty_line],
+    })
+
+    expect(global.fail).not.toHaveBeenCalled()
+    expect(global.warn).not.toHaveBeenCalled()
+  })
+
+  it("should not fail for empty line if disabled", () => {
+    global.danger = {
+      git: {
+        commits: [
+          {
+            message: TEST_MESSAGES.empty_line,
+            sha: "123456",
+          },
+        ],
+      },
+    }
+
+    commitLint.check({
+      disable: [CommitLintRuleName.empty_line],
+      fail: [CommitLintRuleName.empty_line],
+    })
+
+    expect(global.fail).not.toHaveBeenCalled()
+    expect(global.warn).not.toHaveBeenCalled()
+  })
+
+  it("should prioritize warn over fail", () => {
+    global.danger = {
+      git: {
+        commits: [
+          {
+            message: TEST_MESSAGES.empty_line,
+            sha: "123456",
+          },
+        ],
+      },
+    }
+
+    commitLint.check({
+      warn: [CommitLintRuleName.empty_line],
+      fail: [CommitLintRuleName.empty_line],
+    })
+
+    expect(global.fail).not.toHaveBeenCalled()
+    expect(global.warn).toHaveBeenCalled()
+  })
+
+  it("should error for lowercase commit subject", () => {
+    global.danger = {
+      git: {
+        commits: [
+          {
+            message: TEST_MESSAGES.subject_cap,
+            sha: "123456",
+          },
+        ],
+      },
+    }
+
+    commitLint.check()
+
+    expect(global.fail).toHaveBeenCalledWith("Please start commit subject with capital letter.\n123456")
+    expect(global.warn).not.toHaveBeenCalled()
+  })
+
+  it("should error for lowercase commit subject", () => {
+    global.danger = {
+      git: {
+        commits: [
+          {
+            message: TEST_MESSAGES.subject_length,
+            sha: "123456",
+          },
+        ],
+      },
+    }
+
+    commitLint.check()
+
+    expect(global.fail).toHaveBeenCalledWith("Please limit commit subject line to 50 characters.\n123456")
+    expect(global.warn).not.toHaveBeenCalled()
+  })
+
+  it("should error for subject ending in a period", () => {
+    global.danger = {
+      git: {
+        commits: [
+          {
+            message: TEST_MESSAGES.subject_period,
+            sha: "123456",
+          },
+        ],
+      },
+    }
+
+    commitLint.check()
+
+    expect(global.fail).toHaveBeenCalledWith("Please remove period from end of commit subject line.\n123456")
+    expect(global.warn).not.toHaveBeenCalled()
+  })
+
+  it("should error for subject that is one word", () => {
+    global.danger = {
+      git: {
+        commits: [
+          {
+            message: TEST_MESSAGES.subject_words,
+            sha: "123456",
+          },
+        ],
+      },
+    }
+
+    commitLint.check()
+
+    expect(global.fail).toHaveBeenCalledWith("Please use more than one word in commit message.\n123456")
+    expect(global.warn).not.toHaveBeenCalled()
   })
 })

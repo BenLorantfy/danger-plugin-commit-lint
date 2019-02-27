@@ -1,7 +1,6 @@
-import { CommitInfo } from "../types"
+import { CommitInfo, CommitLintRuleName } from "../types"
 
 export abstract class CommitLintRule {
-  // tslint:disable-next-line no-empty
-  constructor(info: CommitInfo) {}
-  public abstract fail(info: CommitInfo): boolean
+  public abstract readonly name: CommitLintRuleName
+  public abstract check(info: CommitInfo): string|null
 }
