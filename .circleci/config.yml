@@ -51,6 +51,15 @@ jobs:
           at: ~/danger-plugin-commit-lint
       - run: yarn lint
 
+  danger:
+    docker:
+      - image: circleci/node:8
+    working_directory: ~/danger-plugin-commit-lint
+    steps:
+      - attach_workspace:
+          at: ~/danger-plugin-commit-lint
+      - run: yarn danger ci
+
 workflows:
   version: 2
   workflow:
@@ -63,5 +72,8 @@ workflows:
           requires:
             - prepare
       - lint:
+          requires:
+            - prepare
+      - danger:
           requires:
             - prepare
