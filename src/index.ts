@@ -28,6 +28,7 @@ const rules = [
 
 /**
  * This is a Danger Plugin that ensures nice and tidy commit messages.
+ * 
  */
 export function check(options: CommitLintOptions = {}) {
   rules.forEach((ruleClass) => {
