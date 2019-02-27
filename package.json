@@ -1,0 +1,78 @@
+{
+  "name": "danger-plugin-commit-lint",
+  "description": "This is a Danger Plugin that ensures nice and tidy commit messages.",
+  "author": {
+    "name": "Ben Lorantfy",
+    "email": "benlorantfy@gmail.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/BenLorantfy/danger-plugin-commit-lint.git"
+  },
+  "bugs": {
+    "url": "https://github.com/BenLorantfy/danger-plugin-commit-lint/issues"
+  },
+  "homepage": "https://github.com/BenLorantfy/danger-plugin-commit-lint#readme",
+  "keywords": [
+    "danger",
+    "danger-plugin",
+    "commit message lint"
+  ],
+  "version": "0.0.0-development",
+  "main": "dist/index.js",
+  "types": "types/index.d.ts",
+  "scripts": {
+    "precommit": "lint-staged",
+    "commit": "git-cz",
+    "commitmsg": "validate-commit-msg",
+    "build": "tsc",
+    "test": "jest",
+    "predocs": "rm -rf docs/",
+    "docs": "esdoc -c .esdoc.json",
+    "prettier": "prettier",
+    "prettier-write": "npm run prettier -- --parser typescript --no-semi --trailing-comma es5 --write --print-width 120",
+    "prettier-project": "npm run prettier-write -- 'src/**/*.{ts,tsx}'",
+    "lint": "tslint \"src/**/*.ts\""
+  },
+  "license": "MIT",
+  "engines": {
+    "node": ">=4.0.0"
+  },
+  "devDependencies": {
+    "@types/jest": "^24.0.9",
+    "danger": "*",
+    "husky": "^1.3.1",
+    "jest": "^24.1.0",
+    "lint-staged": "^8.1.4",
+    "prettier": "^1.3.1",
+    "ts-jest": "^24.0.0",
+    "tslint": "^5.13.0",
+    "typescript": "^3.3.3333",
+    "validate-commit-msg": "^2.12.1"
+  },
+  "optionalDependencies": {
+    "esdoc": "^0.5.2"
+  },
+  "lint-staged": {
+    "*.@(ts|tsx)": [
+      "tslint --fix",
+      "npm run prettier-write --",
+      "git add"
+    ]
+  },
+  "jest": {
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js"
+    ],
+    "transform": {
+      ".(ts|tsx)": "ts-jest"
+    },
+    "testRegex": "(.test)\\.(ts|tsx)$",
+    "testPathIgnorePatterns": [
+      "\\.snap$",
+      "<rootDir>/node_modules/"
+    ]
+  }
+}

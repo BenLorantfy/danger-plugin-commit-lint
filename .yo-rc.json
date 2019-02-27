@@ -1,0 +1,11 @@
+{
+  "generator-danger-plugin": {
+    "promptValues": {
+      "authorName": "Ben Lorantfy",
+      "authorEmail": "benlorantfy@gmail.com",
+      "githubUsername": "BenLorantfy",
+      "useYarn": true,
+      "useTypeScript": true
+    }
+  }
+}
