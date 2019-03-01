@@ -845,10 +845,10 @@ cssstyle@^1.0.0:
   dependencies:
     cssom "0.3.x"
 
-danger-plugin-commit-lint@^0.0.0-rc.3:
-  version "0.0.0-rc.3"
-  resolved "https://registry.yarnpkg.com/danger-plugin-commit-lint/-/danger-plugin-commit-lint-0.0.0-rc.3.tgz#dc9e48dc9a1882746d9aa5ad00002032eecbbb2b"
-  integrity sha512-K5psoEsETYDWvzs3ErgXweB7h2W51/swofcCxruJUFehboukCNK/cOnQl9EjvMzfNMD/+flDlmM8ZT7kWi/YaA==
+danger-plugin-commit-lint@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/danger-plugin-commit-lint/-/danger-plugin-commit-lint-1.0.0.tgz#abe6d8c01b7cb5fd66299108aa728f2dd452982b"
+  integrity sha512-iAVk1gZ/3S+tMipootJJLc8WxZO4Jo/SCCPlrktLmUIJTHF9PMdyDp2YiqpvoyifIuxWObCupRH7NaopeSk3Ig==
 
 danger@*:
   version "7.0.14"

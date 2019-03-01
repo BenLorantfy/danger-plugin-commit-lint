@@ -1,7 +1,5 @@
 import { message } from "danger"
-import { check } from "danger-plugin-commit-lint"
+import * as commitLint from "danger-plugin-commit-lint"
 
-message("This is a test message")
-check({
-  warn: true,
-})
+commitLint.check()
+message("This is a test message to make sure danger is working")
