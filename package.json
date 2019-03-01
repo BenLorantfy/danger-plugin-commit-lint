@@ -16,19 +16,24 @@
   "keywords": [
     "danger",
     "danger-plugin",
-    "commit message lint"
+    "commit",
+    "message",
+    "lint",
+    "linting"
   ],
-  "version": "0.0.0-development",
+  "version": "1.0.0",
   "main": "dist/index.js",
-  "types": "types/index.d.ts",
+  "types": "dist/index.d.ts",
+  "files": [
+    "README.md",
+    "tsconfig.json",
+    "dist",
+    "LICENSE.md"
+  ],
   "scripts": {
     "precommit": "lint-staged",
-    "commit": "git-cz",
-    "commitmsg": "validate-commit-msg",
     "build": "tsc",
     "test": "jest",
-    "predocs": "rm -rf docs/",
-    "docs": "esdoc -c .esdoc.json",
     "prettier": "prettier",
     "prettier-write": "npm run prettier -- --parser typescript --no-semi --trailing-comma es5 --write --print-width 120",
     "prettier-project": "npm run prettier-write -- 'src/**/*.{ts,tsx}'",
@@ -41,6 +46,7 @@
   "devDependencies": {
     "@types/jest": "^24.0.9",
     "danger": "*",
+    "danger-plugin-commit-lint": "^1.0.0",
     "husky": "^1.3.1",
     "jest": "^24.1.0",
     "lint-staged": "^8.1.4",
@@ -49,9 +55,6 @@
     "tslint": "^5.13.0",
     "typescript": "^3.3.3333",
     "validate-commit-msg": "^2.12.1"
-  },
-  "optionalDependencies": {
-    "esdoc": "^0.5.2"
   },
   "lint-staged": {
     "*.@(ts|tsx)": [

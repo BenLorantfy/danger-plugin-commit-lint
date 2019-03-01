@@ -1,16 +1,14 @@
-import { CommitInfo } from "../types"
+import { CommitInfo, CommitLintRuleName } from "../types"
 import { CommitLintRule } from "./CommitLintRule"
 
 export class EmptyLineRule extends CommitLintRule {
-  static MESSAGE = "Please separate commit subject from body with newline."
-  private emptyLine: string
+  name = CommitLintRuleName.empty_line
+  check(info: CommitInfo) {
+    const isFail = Boolean(info.emptyLine && info.emptyLine.length > 0)
+    if (isFail) {
+      return "Please separate commit subject from body with newline."
+    }
 
-  constructor(info: CommitInfo) {
-    super(info)
-    this.emptyLine = info.emptyLine
-  }
-
-  fail() {
-    return Boolean(this.emptyLine && this.emptyLine.length > 0)
+    return null
   }
 }
