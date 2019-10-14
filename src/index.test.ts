@@ -256,4 +256,50 @@ describe("commitLint()", () => {
     expect(global.fail).toHaveBeenCalledWith("Please use more than one word in commit message.\n123456")
     expect(global.warn).not.toHaveBeenCalled()
   })
+
+  it("should group repeated errors together", () => {
+    global.danger = {
+      git: {
+        commits: [
+          {
+            message: TEST_MESSAGES.subject_cap,
+            sha: "sha1",
+          },
+          {
+            message: TEST_MESSAGES.subject_cap,
+            sha: "sha2",
+          },
+        ],
+      },
+    }
+
+    commitLint.check()
+
+    expect(global.fail).toHaveBeenCalledWith("Please start commit subject with capital letter.\nsha1\nsha2")
+    expect(global.warn).not.toHaveBeenCalled()
+  })
+
+  it("should group repeated warnings together", () => {
+    global.danger = {
+      git: {
+        commits: [
+          {
+            message: TEST_MESSAGES.empty_line,
+            sha: "sha1",
+          },
+          {
+            message: TEST_MESSAGES.empty_line,
+            sha: "sha2",
+          },
+        ],
+      },
+    }
+
+    commitLint.check({
+      warn: [CommitLintRuleName.empty_line],
+    })
+
+    expect(global.fail).not.toHaveBeenCalledWith()
+    expect(global.warn).toHaveBeenCalledWith("Please separate commit subject from body with newline.\nsha1\nsha2")
+  })
 })

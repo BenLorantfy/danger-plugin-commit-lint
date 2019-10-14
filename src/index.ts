@@ -10,7 +10,7 @@ import { SubjectCapRule } from "./rules/SubjectCapRule"
 import { SubjectLengthRule } from "./rules/SubjectLengthRule"
 import { SubjectPeriodRule } from "./rules/SubjectPeriodRule"
 import { SubjectWordsRule } from "./rules/SubjectWordsRule"
-import { CommitLintRuleName, CommitLintRuleNameUnion } from "./types"
+import { CommitInfo, CommitLintRuleName, CommitLintRuleNameUnion } from "./types"
 
 export interface CommitLintOptions {
   warn?: true | Array<CommitLintRuleName | CommitLintRuleNameUnion>
@@ -29,32 +29,36 @@ export function check(options: CommitLintOptions = {}) {
     return
   }
 
+  const infos: CommitInfo[] = danger.git.commits.map(commit => {
+    const [subject, emptyLine] = commit.message.split("\n")
+
+    return {
+      subject,
+      emptyLine,
+      sha: commit.sha,
+    }
+  })
+
   rules.forEach(ruleClass => {
-    danger.git.commits.forEach(commit => {
-      const [subject, emptyLine] = commit.message.split("\n")
-      const rule = new ruleClass()
+    const rule = new ruleClass()
+    const shouldDisable = options.disable && (options.disable === true || options.disable.indexOf(rule.name) > -1)
 
-      const error = rule.check({
-        subject,
-        emptyLine,
-        sha: commit.sha,
-      })
+    if (!shouldDisable) {
+      const failingShas = infos.filter(info => rule.check(info)).map(info => info.sha)
 
-      if (error) {
-        const shouldDisable = options.disable && (options.disable === true || options.disable.indexOf(rule.name) > -1)
+      if (failingShas.length > 0) {
+        const failMessage = [rule.message, ...failingShas].join("\n")
 
-        if (!shouldDisable) {
-          if (options.warn && (options.warn === true || options.warn.indexOf(rule.name) > -1)) {
-            warn(`${error}\n${commit.sha}`)
-          } else if (
-            typeof options.fail === "undefined" ||
-            (options.fail && (options.fail === true || options.fail.indexOf(rule.name) > -1))
-          ) {
-            fail(`${error}\n${commit.sha}`)
-          }
+        if (options.warn && (options.warn === true || options.warn.indexOf(rule.name) > -1)) {
+          warn(failMessage)
+        } else if (
+          typeof options.fail === "undefined" ||
+          (options.fail && (options.fail === true || options.fail.indexOf(rule.name) > -1))
+        ) {
+          fail(failMessage)
         }
       }
-    })
+    }
   })
 }
 
