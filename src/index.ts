@@ -1,5 +1,5 @@
 // Provides dev-time type structures for  `danger` - doesn't affect runtime.
-import {DangerDSLType} from "../node_modules/danger/distribution/dsl/DangerDSL"
+import { DangerDSLType } from "../node_modules/danger/distribution/dsl/DangerDSL"
 declare var danger: DangerDSLType
 declare function message(message: string): void
 declare function warn(message: string): void
@@ -13,18 +13,12 @@ import { SubjectWordsRule } from "./rules/SubjectWordsRule"
 import { CommitLintRuleName, CommitLintRuleNameUnion } from "./types"
 
 export interface CommitLintOptions {
-  warn?: true | Array<CommitLintRuleName|CommitLintRuleNameUnion>;
-  fail?: true | Array<CommitLintRuleName|CommitLintRuleNameUnion>;
-  disable?: true | Array<CommitLintRuleName|CommitLintRuleNameUnion>;
+  warn?: true | Array<CommitLintRuleName | CommitLintRuleNameUnion>
+  fail?: true | Array<CommitLintRuleName | CommitLintRuleNameUnion>
+  disable?: true | Array<CommitLintRuleName | CommitLintRuleNameUnion>
 }
 
-const rules = [
-  EmptyLineRule,
-  SubjectCapRule,
-  SubjectLengthRule,
-  SubjectPeriodRule,
-  SubjectWordsRule,
-]
+const rules = [EmptyLineRule, SubjectCapRule, SubjectLengthRule, SubjectPeriodRule, SubjectWordsRule]
 
 /**
  * This is a Danger Plugin that ensures nice and tidy commit messages.
@@ -35,10 +29,10 @@ export function check(options: CommitLintOptions = {}) {
     return
   }
 
-  rules.forEach((ruleClass) => {
-    danger.git.commits.forEach((commit) => {
+  rules.forEach(ruleClass => {
+    danger.git.commits.forEach(commit => {
       const [subject, emptyLine] = commit.message.split("\n")
-      const rule = new (ruleClass)()
+      const rule = new ruleClass()
 
       const error = rule.check({
         subject,

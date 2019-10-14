@@ -9,7 +9,7 @@ export enum CommitLintRuleName {
 export type CommitLintRuleNameUnion = keyof typeof CommitLintRuleName
 
 export interface CommitInfo {
-  subject: string;
-  emptyLine: string;
-  sha: string;
+  subject: string
+  emptyLine: string
+  sha: string
 }
